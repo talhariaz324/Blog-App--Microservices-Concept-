@@ -1,0 +1,7 @@
+// Our user can post and other user can comment on the posts. We also have to list the posts and their relative comments
+
+// We are using React as client
+// Express for the service post
+// Express for the service comment
+
+As comment depend on the service post so here we will use sync and async technique. 
