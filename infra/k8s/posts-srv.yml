@@ -1,0 +1,25 @@
+# Service is a feature that is responsible for the all the communication inside and outside the cluster.
+# Service are of 4 types: 1) Cluster IP (resposnible communication b/w pods inside the cluster)
+# 2) NodePort (resposnible communication from outside the cluster but for only dev purpose)
+# 3) LoadBalancer (resposnible communication from outside the cluster and for production purpose)
+# 4) That we not use much
+apiVersion: v1
+kind: Service # Making service
+metadata:
+  name: posts-srv # name of service
+spec:
+  type: NodePort # here making NodePort b/c we have only 1 node in VM so no use of cluster ip and load balancer needs more configs
+  selector:
+    app: posts # Telling it that you are going to manage(communicacte pods) with name posts
+  ports:
+    - name: posts
+      protocol: TCP # from outside
+      port: 4000 # Port of the service (for NodePort service) // We make it identical to the target port but not necessarily
+      targetPort: 4000 # Port on which our service is listening (posts server)
+
+# NodePort also give a port that is used to access the node port service from outside the cluster
+# 34044 (outside cluster)-> 4000 (communication service) -> 4000 (feature server)
+
+# kubectl apply -f posts-srv.yml
+# kubectl get services gives you the TCP ip as well
+# Accessing on browser:  minikubeip:TCPIP/ports
