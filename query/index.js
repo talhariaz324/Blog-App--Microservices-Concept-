@@ -51,7 +51,6 @@ app.post("/events", (req, res) => {
 app.listen(4002, async () => {
   console.log("Listening on 4002");
 
-  // If this server off then when on then getting the events that missed by it so that do thet event processing as well.
   const res = await axios.get("http://localhost:4005/events");
 
   for (let event of res.data) {
