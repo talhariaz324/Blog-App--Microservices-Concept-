@@ -1,8 +1,0 @@
-apiVersion: v1 # k8s provides its own objects so for making our own object we need to tell from which version to make our own object
-kind: Pod # Making pod
-metadata:
-  name: posts # pod name is posts
-spec:
-  containers: # List of containers
-    - name: posts # 1 container named posts
-      image: posts:1.01 # this is image from which it will make

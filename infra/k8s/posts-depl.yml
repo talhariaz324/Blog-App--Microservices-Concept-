@@ -1,0 +1,43 @@
+# Deployment is the feature in k8s for managing the pods of the service.
+# Deployment is also responsible for shifting to new version of pod if image get update
+# So before we was making directly pods which is not recommended. so we make pods using deployment yml file and tell aslo that
+#  to which pods you are going to manage.
+
+apiVersion: apps/v1 # Getting bucket for deployment from the k8s of v1
+kind: Deployment # Deployment service of k8s
+metadata:
+  name: posts-depl # name of the Deployment service
+spec:
+  replicas: 1 # Number of pods that this deployment is going to manage
+  selector: # here we tell which pods to manage
+    matchLabels:
+      app: posts # pods with name posts you have to manage
+  template: # Here from we are making the pods with name posts
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts # Running the container of the image that we build in posts.
+          image: talhariaz324/posts:latest # Here instead mentioning the version, use latest so that whenever the new version of image come then it take that version.
+# But make sure that new image for pod should also have version latest and when latest, you have to push the imahe to docker.
+# docker login, docker username and password on the your mail saved password
+# first tag the image with username before push: docker tag posts:latest <your_dockerhub_username>/posts:latest
+# docker push myusername/posts:latest
+
+# When image ready then go to k8s folder and apply the new post-depl
+# First time: kubectl apply -f posts-depl.yml
+# Second time when you update image to docker hub: kubectl rollout restart deployment <deployment-name>
+
+# When image on docker hub then no need this:
+
+# For making images and pods and deployments inside the docker daemon of k8s we have to shift our host docker daemon to k8s docker daemon:
+# 1) minikube docker-env
+# 2) set -gx DOCKER_TLS_VERIFY "1";
+# set -gx DOCKER_HOST "tcp://192.168.39.53:2376";
+# set -gx DOCKER_CERT_PATH "/home/talha/.minikube/certs";
+# set -gx MINIKUBE_ACTIVE_DOCKERD "minikube";
+
+# 3) For shifting back to host docker daemon:
+# eval $(minikube docker-env -u)
+
