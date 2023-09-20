@@ -41,3 +41,19 @@ spec:
 # 3) For shifting back to host docker daemon:
 # eval $(minikube docker-env -u)
 
+# Cluster IP service
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-clusterip-srv # name should be unique
+spec: # By default the type of service is cluster ip so no need to mention and remaining congifs same as nodeport
+  selector:
+    app: posts
+  ports:
+    - name: posts
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+# After making cluster, again apply changes using command apply .

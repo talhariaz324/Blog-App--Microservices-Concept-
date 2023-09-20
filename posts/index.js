@@ -23,7 +23,8 @@ app.post("/posts", async (req, res) => {
     title,
   };
 
-  await axios.post("http://localhost:4005/events", {
+  await axios.post("http://event-bus-srv:4005/events", {
+    // instead of localhost use the clusterip of event as we are in k8s
     type: "PostCreated",
     data: {
       id,
