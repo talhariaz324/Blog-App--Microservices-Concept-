@@ -1,0 +1,40 @@
+# Today we are going to learn load balancer service.
+# Our k8s cluster is always going to be run at the some cloud. So load balancer service is in k8s cluster that direct to its cloud on which it exists and get its feature named load balancer.
+# This load balancer is used to reach the cluster from the outside (browser). This load balancer sends requests to ingress controller.
+# ingress controller is responsible to which pod have to send the request based on the path from the client.
+# So we install the ingress controller using helm from chatgpt
+# here is the config of that ingress controller service
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    # When production then we can have multiple domain names so that here we have to mention the domain name where from the req will come to cloud
+    # But as we are on the local, so we add here posts.com and set posts.com as our minikube ip to posts.com in /etc/hosts like: 192.168.39.53 posts.com
+    - host: posts.com
+      http:
+        paths:
+          - path: /posts # when req come from path posts.com/posts then our ingress move to pod posts which is at port 4000
+            pathType: Prefix
+            backend:
+              service:
+                name: posts-clusterip-srv # clusterIp service so that we can interact within the k8s cluster
+                port:
+                  number: 4000
+          - path: /events # when req come from path posts.com/events then our ingress move to pod event bus which is at port 4005
+            pathType: Prefix
+            backend:
+              service:
+                name: event-bus-srv # clusterIp service so that we can interact within the k8s cluster
+                port:
+                  number: 4005
+          - path: /?(.*) # Our client app pod is also running in our k8s cluster. so when path only / then we have to return pod of our client (html,css, js) to browser. we add ?(.*) that shows / can have differnet paths as well in our client as well like react router dom. So add this in end.
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000

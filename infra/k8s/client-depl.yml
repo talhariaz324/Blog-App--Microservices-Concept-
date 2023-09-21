@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: talhariaz324/client:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: client
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+
+      #  Change the paths from localhost to posts.com so that when req the browser -> loadbalancer -> ingress controller -> path (of pod) -> execute the status
+      # We dont push the client as there was some issue with the image building of it. But that's how the things work.
+      # if we still go browser and do posts.com/posts gives the empty object means its working. As we dont deploy client so its not a big deal
