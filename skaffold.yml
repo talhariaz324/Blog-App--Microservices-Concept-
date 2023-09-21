@@ -1,0 +1,36 @@
+apiVersion: skaffold/v3
+kind: Config
+build:
+  artifacts:
+    # - image: talhariaz324/client
+    #   context: client
+    #   sync:
+    #     manual:
+    #       - src: "src/**/*.js" # if something change in src then just copy paste the change but if something else change the build image again
+    #         dest: .
+    #   docker:
+    #     dockerfile: Dockerfile
+    - image: talhariaz324/event-bus
+      context: event-bus
+      sync:
+        manual:
+          - src: "*.js" # Only need in .js file of copy paste if change happen else do build
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+    - image: talhariaz324/posts
+      context: posts
+      sync:
+        manual:
+          - src: "*.js"
+            dest: .
+      docker:
+        dockerfile: Dockerfile
+  local:
+    push: false # As it will get the image locally in the development
+manifests:
+  rawYaml:
+    - ./infra/k8s/* # where all mine yml files that needs to be rebuild etc.
+deploy:
+  kubectl: {}
+# to run use skaffold dev in its path and we are good to go for changes,
